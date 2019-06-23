@@ -51,7 +51,7 @@ public class FileData {
 	void writeFile () {
 		calculateAverage ();
 		try {
-	         BufferedWriter out = new BufferedWriter(new FileWriter("C:\\Users\\BassantAhmed\\Desktop\\OutputFile"));
+	         BufferedWriter out = new BufferedWriter(new FileWriter("OutputFile.txt"));
 	         out.write(numOfRecords + ", " + numOfTrips + ", " + months[0] + ", " + months[1]
 	        		 + ", " + months[2] + ", " + months[3] + ", " + months[4] + ", " + months[5]
 	        		 + ", " + months[6] + ", " + months[7] + ", " + months[8] + ", " + months[9]

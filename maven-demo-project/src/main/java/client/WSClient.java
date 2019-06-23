@@ -4,8 +4,9 @@ import java.net.URI;
 import javax.websocket.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.knowm.xchart.*;
-import org.knowm.xchart.style.Styler.ChartTheme;
+import org.knowm.xchart.QuickChart;
+import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYChart;
 
 
 @ClientEndpoint
@@ -13,9 +14,9 @@ import org.knowm.xchart.style.Styler.ChartTheme;
 public class WSClient {
 	private static Object waitLock = new Object();
 	private static FileData fd = new FileData();
-	static private DashboardData dd = new DashboardData();
-	static CategoryChart chart1, chart2, chart3;
-	static SwingWrapper<CategoryChart> sw1, sw2, sw3;
+	private static DashboardData dd = new DashboardData();
+	private static XYChart  chart1, chart2, chart3;
+	private static SwingWrapper<XYChart> sw1, sw2, sw3;
 	@OnMessage
     public void onMessage(String message) {
 	   JSONParser parser = new JSONParser();
@@ -38,50 +39,30 @@ public class WSClient {
     }
 	
 	@OnClose
-    public void onClose(Session userSession, CloseReason reason) {
+    public void onClose() {
 		fd.writeFile();
     }
 	
 	static void initializeCharts () {
-		chart1 = new CategoryChartBuilder()
-		.width(500)
-		.height(400)
-		.theme(ChartTheme.Matlab)
-		.title("Real Time Category Chart")
-		.build();
-		chart1.addSeries("Number of trips per day", dd.numOfTrips, dd.days);
-        sw1 = new SwingWrapper<CategoryChart>(chart1);
+		chart1 = QuickChart.getChart("Number of trips per day", "noOfTrips", "days", "noOfTrips", dd.numOfTrips, dd.days);
+        sw1 = new SwingWrapper<XYChart >(chart1);
         sw1.displayChart();
         
-        chart2 = new CategoryChartBuilder()
-		.width(500)
-		.height(400)
-		.theme(ChartTheme.Matlab)
-		.title("Real Time Category Chart")
-		.build();
-		chart2.addSeries("Number of trips without drop-off location id", dd.emptyDropOff, dd.taxiTypes);
+        chart2 = QuickChart.getChart("Number of trips without drop-off location id", "noOfTrips", "taxi type", "noOfTrips",dd.emptyDropOff, dd.taxiTypes);
+		sw2 = new SwingWrapper<XYChart >(chart2);
+	    sw2.displayChart();
 		
-		 sw2 = new SwingWrapper<CategoryChart>(chart2);
-	        sw2.displayChart();
-		
-	     chart3 = new CategoryChartBuilder()
-		.width(500)
-		.height(400)
-		.theme(ChartTheme.Matlab)
-		.title("Real Time Category Chart")
-		.build();
-		chart3.addSeries("Minutes per trip for each taxi type.", dd.minPerTaxi, dd.taxiTypes);
-
-         sw3 = new SwingWrapper<CategoryChart>(chart3);
+		chart3 = QuickChart.getChart("Minutes per trip for each taxi type.","minPerTaxi", "taxi type", "minPerTaxi", dd.minPerTaxi, dd.taxiTypes);
+         sw3 = new SwingWrapper<XYChart >(chart3);
          sw3.displayChart();
 	}
 	
 	void displayCharts() {
-		chart1.updateCategorySeries("numOfTrips", dd.numOfTrips, dd.days, null);
+		chart1.updateXYSeries("noOfTrips", dd.numOfTrips, dd.days, null);
         sw1.repaintChart();
-        chart2.updateCategorySeries("numOfTrips with no dropOff id", dd.emptyDropOff, dd.taxiTypes, null);
+        chart2.updateXYSeries("noOfTrips", dd.emptyDropOff, dd.taxiTypes, null);
         sw2.repaintChart();
-        chart3.updateCategorySeries("minPerTrip", dd.minPerTaxi, dd.taxiTypes, null);
+        chart3.updateXYSeries("minPerTaxi", dd.minPerTaxi, dd.taxiTypes, null);
         sw3.repaintChart();
 	}
 	
