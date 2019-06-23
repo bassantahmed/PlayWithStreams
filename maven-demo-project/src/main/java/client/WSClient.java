@@ -45,7 +45,7 @@ public class WSClient {
 	
 	static void initializeCharts () {
 		chart1 = QuickChart.getChart("Number of trips per day", "noOfTrips", "days", "noOfTrips", dd.numOfTrips, dd.days);
-        sw1 = new SwingWrapper<XYChart >(chart1);
+        sw1 = new SwingWrapper<XYChart >(chart1); 
         sw1.displayChart();
         
         chart2 = QuickChart.getChart("Number of trips without drop-off location id", "noOfTrips", "taxi type", "noOfTrips",dd.emptyDropOff, dd.taxiTypes);
